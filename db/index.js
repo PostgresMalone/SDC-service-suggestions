@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 mongoose.connect('mongodb://172.17.0.2/airBNB');
 // mongoose.connect('mongodb://localhost/airBNB');
 
+
 let homeSchema = mongoose.Schema({
   id: {
     type: Number,

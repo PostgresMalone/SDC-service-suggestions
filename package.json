@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "csv": "^5.1.0",
     "express": "^4.16.4",
     "faker": "^4.1.0",
     "mongoose": "^5.4.1",
