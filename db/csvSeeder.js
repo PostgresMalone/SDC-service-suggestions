@@ -1,11 +1,6 @@
 const faker = require('faker');
 const fs = require('fs');
-const FILES_TO_GENERATE = 2;
-
-
-/*          -------------------- HELPERS --------------------          */
-
-// Helper functions are a way to help decrease faker requests for faster write speed //
+const FILES_TO_GENERATE = 20;
 
 const randomArrayElement = (arr) => {
   let randomIdx = Math.floor(Math.random() * arr.length);
@@ -62,15 +57,12 @@ const generateCsvRow = () => {
   ].join() + '\n';
 }
 
-// -------------------- BEGIN SEED SCRIPT -------------------- //
-
 const headers = ['id', 'home_image', 'home_thumbnail_img', 'home_beds', 'city',
   'state', 'country', 'house_name', 'house_price', 'reviews'];
 
 const generateCsv = (stream) => {
 
-  // let totalCount = 500000
-  let i = 100000;
+  let i = 500000;
   write();
 
   function write() {
@@ -80,7 +72,6 @@ const generateCsv = (stream) => {
       if (i === 0) {
         stream.write(generateCsvRow());
       } else {
-
         canContinue = stream.write(generateCsvRow());
       }
     } while (i > 0 && canContinue);
@@ -95,6 +86,3 @@ for (i = 0; i < FILES_TO_GENERATE; i++) {
   suggestionStream.write(headers.join() + '\n');
   generateCsv(suggestionStream)
 }
-
-
-
