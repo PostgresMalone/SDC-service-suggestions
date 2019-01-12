@@ -1,6 +1,6 @@
 const faker = require('faker');
 const fs = require('fs');
-const FILES_TO_GENERATE = 20;
+const FILES_TO_GENERATE = 1;
 
 const randomArrayElement = (arr) => {
   let randomIdx = Math.floor(Math.random() * arr.length);
@@ -34,48 +34,56 @@ const generateRandomPrice = () => {
 }
 
 const generateLoremWords = () => {
-  let wordBank = ["Lorem", "ipsum", "dolor", "sit", "amet,",
-    "consectetur", "adipiscing", "elit,", "sed",
+  let wordBank = ["Lorem", "ipsum", "dolor", "sit", "amet",
+    "consectetur", "adipiscing", "elit", "sed",
     "do", "eiusmod", "tempor", "incididunt", "ut",
     "labore", "et", "dolore", "magna", "aliqua"];
 
   return `${randomArrayElement(wordBank)} ${randomArrayElement(wordBank)} ${randomArrayElement(wordBank)} ${randomArrayElement(wordBank)} ${randomArrayElement(wordBank)}`
 }
 
-const generateCsvRow = () => {
-  return [
-    generateNumberBetweenRange(0, 50),
-    faker.image.imageUrl(),
-    faker.image.imageUrl(),
-    bedNumberGenerator(),
-    faker.address.city(),
-    stateAbbreviationGenerator(),
-    faker.address.country(),
-    generateLoremWords(),
-    generateRandomPrice(),
-    generateNumberBetweenRange(1, 100),
-  ].join() + '\n';
+const generateCountry = () => {
+  let countryArray = ['United States', 'Brazil', 'Taiwan', 'Belgium', 'Thailand', 'Vietnam', 'Spain', 'Malaysia', 'Ireland',
+    'Costa Rica', 'Denmark', 'Cambodia', 'Laos', 'Canada', 'Mexico', 'Morocco', 'South Korea', 'Turkey', 'Venuzuela', 'Puerto Rico',]
+
+  return randomArrayElement(countryArray);
 }
 
-const headers = ['id', 'home_image', 'home_thumbnail_img', 'home_beds', 'city',
-  'state', 'country', 'house_name', 'house_price', 'reviews'];
+const headers = ['id', 'home_id', 'home_image', 'home_thumbnail_img', 'home_beds', 'city',
+  'states', 'country', 'house_name', 'house_price', 'reviews'];
 
 const generateCsv = (stream) => {
-
-  let i = 500000;
+  let i = 0;
+  let numRows = 10000;
   write();
+
+  function generateCsvRow() {
+    return [
+      i,
+      generateNumberBetweenRange(50, 100),
+      faker.image.imageUrl(),
+      faker.image.imageUrl(),
+      bedNumberGenerator(),
+      faker.address.city(),
+      stateAbbreviationGenerator(),
+      generateCountry(),
+      generateLoremWords(),
+      generateRandomPrice(),
+      generateNumberBetweenRange(1, 10),
+    ].join() + '\n';
+  }
 
   function write() {
     let canContinue = true;
     do {
-      i--;
-      if (i === 0) {
+      i++;
+      if (i === numRows) {
         stream.write(generateCsvRow());
       } else {
         canContinue = stream.write(generateCsvRow());
       }
-    } while (i > 0 && canContinue);
-    if (i > 0) {
+    } while (i < numRows && canContinue);
+    if (i < numRows) {
       stream.once('drain', () => write());
     }
   }
