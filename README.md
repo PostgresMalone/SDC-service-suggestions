@@ -45,23 +45,48 @@ npm install
 
 ## CRUD Operations
 
+
+
 - Create
   * HTTP method: POST
   * Route URL: /user/favorites
   * Description: Save new suggestion to suggestions db
+  * Input: An object containing a new home listing. 
+  * Output: None
+  * Body: Column headers consisting of:
+    - id
+    - home_image
+    - home_image_thumbnail
+    - home_beds
+    - city
+    - state
+    - country
+    - house_name
+    - house_price
+    - reviews
+    
 
 - Read
   * HTTP method: GET
   * Route URL: /homes/:id/suggestions
   * Description: Retrieve suggestions from database
+  * Input: None
+  * Output: Array of all suggested homes for a specific home listing
+  * Body: N/A
 
 - Update
-  * HTTP method: PUT
+  * HTTP method: PATCH
   * Route URL: /user/updateFavorite
   * Description: Update suggestions in suggestions db
+  * Input: Parameter to update
+  * Output: N/A
+  * Body: Parameter to update (ex: update city from 'CA' to 'NY')
 
 - Delete
   * HTTP method: DELETE
   * Route URL: /homes/:id/suggestions
   * Description: Remove suggested link in db 
+  * Input: Suggestion ID to delete
+  * Output: Confirmation of deletion
+  * Body: Suggestion ID
 
