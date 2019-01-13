@@ -1,6 +1,6 @@
 const faker = require('faker');
 const fs = require('fs');
-const FILES_TO_GENERATE = 1;
+const FILES_TO_GENERATE = 2;
 
 const randomArrayElement = (arr) => {
   let randomIdx = Math.floor(Math.random() * arr.length);
@@ -49,18 +49,23 @@ const generateCountry = () => {
   return randomArrayElement(countryArray);
 }
 
-const headers = ['id', 'home_id', 'home_image', 'home_thumbnail_img', 'home_beds', 'city',
+const suggestionHeaders = ['id', 'home_id', 'home_image', 'home_thumbnail_img', 'home_beds', 'city',
   'states', 'country', 'house_name', 'house_price', 'reviews'];
 
-const generateCsv = (stream) => {
+const homesHeaders = ['id', 'home_name'];
+
+
+
+//Break 
+const generateSuggestionCsv = (stream) => {
   let i = 0;
-  let numRows = 10000;
+  let numRows = 100;
   write();
 
   function generateCsvRow() {
     return [
       i,
-      generateNumberBetweenRange(50, 100),
+      generateNumberBetweenRange(0, numRows),
       faker.image.imageUrl(),
       faker.image.imageUrl(),
       bedNumberGenerator(),
@@ -82,15 +87,47 @@ const generateCsv = (stream) => {
       } else {
         canContinue = stream.write(generateCsvRow());
       }
-    } while (i < numRows && canContinue);
+    } while (i < numRows && canContinue)
     if (i < numRows) {
       stream.once('drain', () => write());
     }
   }
 }
 
-for (i = 0; i < FILES_TO_GENERATE; i++) {
-  const suggestionStream = fs.createWriteStream(`suggestionCsv${i}.csv`, { flags: 'w' });
-  suggestionStream.write(headers.join() + '\n');
-  generateCsv(suggestionStream)
+const generateHomesCsv = (stream) => {
+  let j = 0;
+  let numRows = 100;
+  write();
+
+  function generateHomeRow() {
+    return [
+      j,
+      faker.commerce.productName(),
+    ].join() + '\n';
+  }
+
+  function write() {
+    let shouldContinue = true;
+    do {
+      j++;
+      if (j === numRows) {
+        stream.write(generateHomeRow()); //Function to generate a row
+      } else {
+        shouldContinue = stream.write(generateHomeRow()) //Function to generate a row
+      }
+    } while (j < numRows && shouldContinue)
+    if (j < numRows) {
+      stream.once('drain', () => write());
+    }
+  }
+}
+
+
+for (let k = 0; k < FILES_TO_GENERATE; k++) {
+  const suggestionStream = fs.createWriteStream(`Suggestions${k}.csv`, { flags: 'w' });
+  const homesStream = fs.createWriteStream(`Homes${k}.csv`, { flags: 'w' });
+  suggestionStream.write(suggestionHeaders.join() + '\n');
+  homesStream.write(homesHeaders.join() + '\n');
+  generateSuggestionCsv(suggestionStream)
+  generateHomesCsv(homesStream)
 }
