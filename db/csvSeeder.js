@@ -1,6 +1,10 @@
 const faker = require('faker');
 const fs = require('fs');
-const FILES_TO_GENERATE = 2;
+const SUGGESTION_ROWS_TO_WRITE = 10000000 //1 million rows
+const SUGGESTION_NEW_FILE_COUNT = 1000000 //Make a new file on every millionth row
+const HOMES_ROWS_TO_WRITE = 100000
+const HOMES_NEW_FILE_COUNT = 10000
+
 
 const randomArrayElement = (arr) => {
   let randomIdx = Math.floor(Math.random() * arr.length);
@@ -52,20 +56,17 @@ const generateCountry = () => {
 const suggestionHeaders = ['id', 'home_id', 'home_image', 'home_thumbnail_img', 'home_beds', 'city',
   'states', 'country', 'house_name', 'house_price', 'reviews'];
 
-const homesHeaders = ['id', 'home_name'];
+const homesHeaders = ['home_id', 'home_name'];
 
+const generateSuggestionCsv = () => {
+  let i = 1;
+  let fileNumber = 1;
+  let stream;
 
-
-//Break 
-const generateSuggestionCsv = (stream) => {
-  let i = 0;
-  let numRows = 100;
-  write();
-
-  function generateCsvRow() {
+  const generateCsvRow = () => {
     return [
       i,
-      generateNumberBetweenRange(0, numRows),
+      generateNumberBetweenRange(0, ROWS_TO_WRITE),
       faker.image.imageUrl(),
       faker.image.imageUrl(),
       bedNumberGenerator(),
@@ -78,56 +79,97 @@ const generateSuggestionCsv = (stream) => {
     ].join() + '\n';
   }
 
-  function write() {
+  const write = () => {
     let canContinue = true;
-    do {
-      i++;
-      if (i === numRows) {
-        stream.write(generateCsvRow());
-      } else {
-        canContinue = stream.write(generateCsvRow());
+    while (i <= SUGGESTION_ROWS_TO_WRITE && canContinue) {
+      if (i % SUGGESTION_NEW_FILE_COUNT === 1) {
+        stream = fs.createWriteStream(`Suggestions${fileNumber}.csv`, { flags: 'w' });
+        stream.write(suggestionHeaders.join() + '\n');
+        fileNumber += 1;
       }
-    } while (i < numRows && canContinue)
-    if (i < numRows) {
-      stream.once('drain', () => write());
+
+      canContinue = stream.write(generateCsvRow())
+      i += 1;
+    };
+    if (!canContinue) {
+      stream.once('drain', () => { write() });
     }
   }
+  write();
 }
 
-const generateHomesCsv = (stream) => {
-  let j = 0;
-  let numRows = 100;
-  write();
+const generateHomesCsv = () => {
+  let i = 1;
+  let fileNumber = 1;
+  let stream;
 
-  function generateHomeRow() {
+  const generateHomeRow = () => {
     return [
-      j,
+      i,
       faker.commerce.productName(),
     ].join() + '\n';
   }
 
-  function write() {
-    let shouldContinue = true;
-    do {
-      j++;
-      if (j === numRows) {
-        stream.write(generateHomeRow()); //Function to generate a row
-      } else {
-        shouldContinue = stream.write(generateHomeRow()) //Function to generate a row
+  const write = () => {
+    let canContinue = true;
+    while (i <= HOMES_ROWS_TO_WRITE && canContinue) {
+      if (i % HOMES_NEW_FILE_COUNT === 1) {
+        stream = fs.createWriteStream(`./data/Homes/Homes${fileNumber}.csv`, { flags: 'w' });
+        stream.write(homesHeaders.join() + '\n');
+        fileNumber += 1;
       }
-    } while (j < numRows && shouldContinue)
-    if (j < numRows) {
-      stream.once('drain', () => write());
+
+      canContinue = stream.write(generateHomeRow())
+      i += 1;
+    };
+    if (!canContinue) {
+      stream.once('drain', () => { write() });
     }
   }
+  write();
 }
 
+// const generateHomesCsv = (stream) => {
 
-for (let k = 0; k < FILES_TO_GENERATE; k++) {
-  const suggestionStream = fs.createWriteStream(`Suggestions${k}.csv`, { flags: 'w' });
-  const homesStream = fs.createWriteStream(`Homes${k}.csv`, { flags: 'w' });
-  suggestionStream.write(suggestionHeaders.join() + '\n');
-  homesStream.write(homesHeaders.join() + '\n');
-  generateSuggestionCsv(suggestionStream)
-  generateHomesCsv(homesStream)
-}
+//   let numRows = 500000;
+//   write();
+
+//   function generateHomeRow() {
+//     return [
+//       j,
+//       faker.commerce.productName(),
+//     ].join() + '\n';
+//   }
+
+//   function write() {
+//     let shouldContinue = true;
+//     do {
+//       j++;
+//       if (j === numRows) {
+//         stream.write(generateHomeRow());
+//       } else {
+//         shouldContinue = stream.write(generateHomeRow())
+//       }
+//     } while (j < numRows && shouldContinue)
+//     if (j < numRows) {
+//       stream.once('drain', () => write());
+//     }
+//   }
+// }
+
+// for (let l = 1; l <= FILES_TO_GENERATE; l++) {
+//   const homesStream = fs.createWriteStream(`./data/Homes${l}.csv`, { flags: 'w' });
+//   homesStream.write(homesHeaders.join() + '\n');
+//   generateHomesCsv(homesStream)
+// }
+
+//1 million1 % 1 million means a new file should be written
+
+
+
+
+// generateSuggestionCsv();
+generateHomesCsv();
+
+
+
