@@ -2,8 +2,8 @@ const faker = require('faker');
 const fs = require('fs');
 const SUGGESTION_ROWS_TO_WRITE = 10000000
 const SUGGESTION_NEW_FILE_COUNT = 1000000
-const HOMES_ROWS_TO_WRITE = 100000
-const HOMES_NEW_FILE_COUNT = 10000
+const HOMES_ROWS_TO_WRITE = 10000000
+const HOMES_NEW_FILE_COUNT = 1000000
 
 
 const randomArrayElement = (arr) => {
@@ -111,6 +111,7 @@ const generateHomesCsv = () => {
   }
 
   const write = () => {
+
     let canContinue = true;
     while (i <= HOMES_ROWS_TO_WRITE && canContinue) {
       if (i % HOMES_NEW_FILE_COUNT === 1) {
