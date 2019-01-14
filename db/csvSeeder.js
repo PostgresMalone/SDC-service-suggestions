@@ -1,7 +1,7 @@
 const faker = require('faker');
 const fs = require('fs');
-const SUGGESTION_ROWS_TO_WRITE = 10000000 //1 million rows
-const SUGGESTION_NEW_FILE_COUNT = 1000000 //Make a new file on every millionth row
+const SUGGESTION_ROWS_TO_WRITE = 10000000
+const SUGGESTION_NEW_FILE_COUNT = 1000000
 const HOMES_ROWS_TO_WRITE = 100000
 const HOMES_NEW_FILE_COUNT = 10000
 
@@ -83,7 +83,7 @@ const generateSuggestionCsv = () => {
     let canContinue = true;
     while (i <= SUGGESTION_ROWS_TO_WRITE && canContinue) {
       if (i % SUGGESTION_NEW_FILE_COUNT === 1) {
-        stream = fs.createWriteStream(`Suggestions${fileNumber}.csv`, { flags: 'w' });
+        stream = fs.createWriteStream(`./data/Suggestions/Suggestions${fileNumber}.csv`, { flags: 'w' });
         stream.write(suggestionHeaders.join() + '\n');
         fileNumber += 1;
       }
@@ -129,46 +129,7 @@ const generateHomesCsv = () => {
   write();
 }
 
-// const generateHomesCsv = (stream) => {
-
-//   let numRows = 500000;
-//   write();
-
-//   function generateHomeRow() {
-//     return [
-//       j,
-//       faker.commerce.productName(),
-//     ].join() + '\n';
-//   }
-
-//   function write() {
-//     let shouldContinue = true;
-//     do {
-//       j++;
-//       if (j === numRows) {
-//         stream.write(generateHomeRow());
-//       } else {
-//         shouldContinue = stream.write(generateHomeRow())
-//       }
-//     } while (j < numRows && shouldContinue)
-//     if (j < numRows) {
-//       stream.once('drain', () => write());
-//     }
-//   }
-// }
-
-// for (let l = 1; l <= FILES_TO_GENERATE; l++) {
-//   const homesStream = fs.createWriteStream(`./data/Homes${l}.csv`, { flags: 'w' });
-//   homesStream.write(homesHeaders.join() + '\n');
-//   generateHomesCsv(homesStream)
-// }
-
-//1 million1 % 1 million means a new file should be written
-
-
-
-
-// generateSuggestionCsv();
+generateSuggestionCsv();
 generateHomesCsv();
 
 
