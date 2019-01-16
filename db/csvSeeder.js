@@ -1,6 +1,7 @@
 const faker = require('faker');
 const fs = require('fs');
-const FILES_TO_GENERATE = 20;
+const SUGGESTION_ROWS_TO_WRITE = 70000000
+const SUGGESTION_NEW_FILE_COUNT = 7000000;
 
 const randomArrayElement = (arr) => {
   let randomIdx = Math.floor(Math.random() * arr.length);
@@ -34,55 +35,64 @@ const generateRandomPrice = () => {
 }
 
 const generateLoremWords = () => {
-  let wordBank = ["Lorem", "ipsum", "dolor", "sit", "amet,",
-    "consectetur", "adipiscing", "elit,", "sed",
+  let wordBank = ["Lorem", "ipsum", "dolor", "sit", "amet",
+    "consectetur", "adipiscing", "elit", "sed",
     "do", "eiusmod", "tempor", "incididunt", "ut",
     "labore", "et", "dolore", "magna", "aliqua"];
 
   return `${randomArrayElement(wordBank)} ${randomArrayElement(wordBank)} ${randomArrayElement(wordBank)} ${randomArrayElement(wordBank)} ${randomArrayElement(wordBank)}`
 }
 
-const generateCsvRow = () => {
-  return [
-    generateNumberBetweenRange(0, 50),
-    faker.image.imageUrl(),
-    faker.image.imageUrl(),
-    bedNumberGenerator(),
-    faker.address.city(),
-    stateAbbreviationGenerator(),
-    faker.address.country(),
-    generateLoremWords(),
-    generateRandomPrice(),
-    generateNumberBetweenRange(1, 100),
-  ].join() + '\n';
+const generateCountry = () => {
+  let countryArray = ['United States', 'Brazil', 'Taiwan', 'Belgium', 'Thailand', 'Vietnam', 'Spain', 'Malaysia', 'Ireland',
+    'Costa Rica', 'Denmark', 'Cambodia', 'Laos', 'Canada', 'Mexico', 'Morocco', 'South Korea', 'Turkey', 'Venuzuela', 'Puerto Rico',]
+
+  return randomArrayElement(countryArray);
 }
 
-const headers = ['id', 'home_image', 'home_thumbnail_img', 'home_beds', 'city',
-  'state', 'country', 'house_name', 'house_price', 'reviews'];
+const suggestionHeaders = ['dummy_id', 'suggestion_id', 'city', 'country', 'home_beds', 'home_name',
+  'home_relation_id', 'home_thumbnail_img', 'home_price', 'states']
 
-const generateCsv = (stream) => {
+const generateSuggestionCsv = () => {
+  let i = 1;
+  let fileNumber = 1;
+  let stream;
 
-  let i = 500000;
-  write();
+  const generateCsvRow = () => {
+    return [
+      1,
+      i,
+      faker.address.city(),
+      generateCountry(),
+      bedNumberGenerator(),
+      faker.commerce.productName(),
+      generateNumberBetweenRange(1, 1000000),
+      faker.image.imageUrl(),
+      generateRandomPrice(),
+      stateAbbreviationGenerator(),
+    ].join() + '\n';
+  }
 
-  function write() {
+  const write = () => {
     let canContinue = true;
-    do {
-      i--;
-      if (i === 0) {
-        stream.write(generateCsvRow());
-      } else {
-        canContinue = stream.write(generateCsvRow());
+    while (i <= SUGGESTION_ROWS_TO_WRITE && canContinue) {
+      if (i % SUGGESTION_NEW_FILE_COUNT === 1) {
+        stream = fs.createWriteStream(`./data/Suggestions/Suggestions${fileNumber}.csv`, { flags: 'w' });
+        stream.write(suggestionHeaders.join() + '\n');
+        fileNumber += 1;
       }
-    } while (i > 0 && canContinue);
-    if (i > 0) {
-      stream.once('drain', () => write());
+
+      canContinue = stream.write(generateCsvRow())
+      i += 1;
+    };
+    if (!canContinue) {
+      stream.once('drain', () => { write() });
     }
   }
+  write();
 }
 
-for (i = 0; i < FILES_TO_GENERATE; i++) {
-  const suggestionStream = fs.createWriteStream(`suggestionCsv${i}.csv`, { flags: 'w' });
-  suggestionStream.write(headers.join() + '\n');
-  generateCsv(suggestionStream)
-}
+generateSuggestionCsv();
+
+
+
