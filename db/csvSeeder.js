@@ -1,10 +1,7 @@
 const faker = require('faker');
 const fs = require('fs');
-const SUGGESTION_ROWS_TO_WRITE = 10000000
-const SUGGESTION_NEW_FILE_COUNT = 1000000
-const HOMES_ROWS_TO_WRITE = 10000000
-const HOMES_NEW_FILE_COUNT = 1000000
-
+const SUGGESTION_ROWS_TO_WRITE = 70000000
+const SUGGESTION_NEW_FILE_COUNT = 7000000;
 
 const randomArrayElement = (arr) => {
   let randomIdx = Math.floor(Math.random() * arr.length);
@@ -53,10 +50,8 @@ const generateCountry = () => {
   return randomArrayElement(countryArray);
 }
 
-const suggestionHeaders = ['id', 'home_id', 'home_image', 'home_thumbnail_img', 'home_beds', 'city',
-  'states', 'country', 'house_name', 'house_price', 'reviews'];
-
-const homesHeaders = ['home_id', 'home_name'];
+const suggestionHeaders = ['dummy_id', 'suggestion_id', 'city', 'country', 'home_beds', 'home_name',
+  'home_relation_id', 'home_thumbnail_img', 'home_price', 'states']
 
 const generateSuggestionCsv = () => {
   let i = 1;
@@ -65,17 +60,16 @@ const generateSuggestionCsv = () => {
 
   const generateCsvRow = () => {
     return [
+      1,
       i,
-      generateNumberBetweenRange(0, ROWS_TO_WRITE),
-      faker.image.imageUrl(),
-      faker.image.imageUrl(),
-      bedNumberGenerator(),
       faker.address.city(),
-      stateAbbreviationGenerator(),
       generateCountry(),
-      generateLoremWords(),
+      bedNumberGenerator(),
+      faker.commerce.productName(),
+      generateNumberBetweenRange(1, 1000000),
+      faker.image.imageUrl(),
       generateRandomPrice(),
-      generateNumberBetweenRange(1, 10),
+      stateAbbreviationGenerator(),
     ].join() + '\n';
   }
 
@@ -98,40 +92,7 @@ const generateSuggestionCsv = () => {
   write();
 }
 
-const generateHomesCsv = () => {
-  let i = 1;
-  let fileNumber = 1;
-  let stream;
-
-  const generateHomeRow = () => {
-    return [
-      i,
-      faker.commerce.productName(),
-    ].join() + '\n';
-  }
-
-  const write = () => {
-
-    let canContinue = true;
-    while (i <= HOMES_ROWS_TO_WRITE && canContinue) {
-      if (i % HOMES_NEW_FILE_COUNT === 1) {
-        stream = fs.createWriteStream(`./data/Homes/Homes${fileNumber}.csv`, { flags: 'w' });
-        stream.write(homesHeaders.join() + '\n');
-        fileNumber += 1;
-      }
-
-      canContinue = stream.write(generateHomeRow())
-      i += 1;
-    };
-    if (!canContinue) {
-      stream.once('drain', () => { write() });
-    }
-  }
-  write();
-}
-
 generateSuggestionCsv();
-generateHomesCsv();
 
 
 
