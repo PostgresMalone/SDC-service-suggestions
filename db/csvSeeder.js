@@ -1,5 +1,7 @@
 const faker = require('faker');
 const fs = require('fs');
+const HOMES_ROWS_TO_WRITE = 10000000;
+const HOMES_NEW_FILE_COUNT = 1000000;
 const SUGGESTION_ROWS_TO_WRITE = 70000000
 const SUGGESTION_NEW_FILE_COUNT = 7000000;
 
@@ -50,8 +52,10 @@ const generateCountry = () => {
   return randomArrayElement(countryArray);
 }
 
-const suggestionHeaders = ['dummy_id', 'suggestion_id', 'city', 'country', 'home_beds', 'home_name',
-  'home_relation_id', 'home_thumbnail_img', 'home_price', 'states']
+const suggestionHeaders = ['suggestion_id', 'city', 'country', 'home_beds', 'home_relation_id',
+  'home_thumbnail_img', 'home_price', 'states'];
+
+const homesHeaders = ['home_id', 'home_name'];
 
 const generateSuggestionCsv = () => {
   let i = 1;
@@ -60,13 +64,11 @@ const generateSuggestionCsv = () => {
 
   const generateCsvRow = () => {
     return [
-      1,
       i,
       faker.address.city(),
       generateCountry(),
       bedNumberGenerator(),
-      faker.commerce.productName(),
-      generateNumberBetweenRange(1, 1000000),
+      generateNumberBetweenRange(1, 10000000),
       faker.image.imageUrl(),
       generateRandomPrice(),
       stateAbbreviationGenerator(),
@@ -92,6 +94,41 @@ const generateSuggestionCsv = () => {
   write();
 }
 
+
+const generateHomesCsv = () => {
+  let i = 1;
+  let fileNumber = 1;
+  let stream;
+
+  const generateHomeRow = () => {
+    return [
+      i,
+      faker.commerce.productName(),
+    ].join() + '\n';
+  }
+
+  const write = () => {
+
+    let canContinue = true;
+    while (i <= HOMES_ROWS_TO_WRITE && canContinue) {
+      if (i % HOMES_NEW_FILE_COUNT === 1) {
+        stream = fs.createWriteStream(`./data/Homes/Homes${fileNumber}.csv`, { flags: 'w' });
+        stream.write(homesHeaders.join() + '\n');
+        fileNumber += 1;
+      }
+
+      canContinue = stream.write(generateHomeRow())
+      i += 1;
+    };
+    if (!canContinue) {
+      stream.once('drain', () => { write() });
+    }
+  }
+  write();
+}
+
+
+// generateHomesCsv();
 generateSuggestionCsv();
 
 
