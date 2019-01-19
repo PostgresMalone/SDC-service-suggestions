@@ -3,6 +3,10 @@ import axios from 'axios';
 import HousesList from './HousesList.jsx';
 import { Container, Header, BottomPadding, GlobalStyle } from './Styled_Components/styling.jsx';
 
+/*
+- Houses is an array of objects {id: , suggestions: }
+*/
+
 class Suggestions extends React.Component {
   constructor(props) {
     super(props);
@@ -19,16 +23,20 @@ class Suggestions extends React.Component {
     this.removeFromFavorited = this.removeFromFavorited.bind(this);
     this.toggleMoreHomes = this.toggleMoreHomes.bind(this);
   }
-  
+
+  //Where the initial homes request is called
   componentDidMount() {
-    this.getHomes(1); 
+    //Grab the URL
+    this.getHomes(100);
     this.getFavoritesList();
   }
 
+  //getHomes function to get the home numbers. 
   getHomes(num) {
     axios.get(`/homes/${num}/suggestions`)
       .then((data) => {
-        this.setState({houses: data.data});
+        console.log(data, 'Data in my frontend')
+        this.setState({ houses: data.data });
       })
       .catch((error) => {
         console.log(error);
@@ -42,14 +50,14 @@ class Suggestions extends React.Component {
         data.data.forEach((list) => {
           ListNames.push(list.favorites);
         });
-        this.setState({favoritesList: ListNames});
+        this.setState({ favoritesList: ListNames });
       })
       .catch((error) => {
         console.log(error);
       });
   }
 
-  addFavoriteList (name) {
+  addFavoriteList(name) {
     axios.post('/user/favorites', {
       listName: name
     })
@@ -62,9 +70,9 @@ class Suggestions extends React.Component {
   }
 
 
-  addToFavorited (listName, houseName) {
+  addToFavorited(listName, houseName) {
     let oldFavorites;
-    for (var i = 0; i < this.state.favoritesList.length; i ++) {
+    for (var i = 0; i < this.state.favoritesList.length; i++) {
       if (this.state.favoritesList[i][listName]) {
         oldFavorites = this.state.favoritesList[i][listName].slice();
       }
@@ -85,9 +93,9 @@ class Suggestions extends React.Component {
       });
   }
 
-  removeFromFavorited (listName, houseName) {
+  removeFromFavorited(listName, houseName) {
     let oldFavorites;
-    for (var i = 0; i < this.state.favoritesList.length; i ++) {
+    for (var i = 0; i < this.state.favoritesList.length; i++) {
       if (this.state.favoritesList[i][listName]) {
         oldFavorites = this.state.favoritesList[i][listName].slice();
       }
@@ -111,21 +119,22 @@ class Suggestions extends React.Component {
         console.log(error);
       });
   }
+
   toggleMoreHomes() {
-    this.setState({moreRevealed: !this.state.moreRevealed});
+    this.setState({ moreRevealed: !this.state.moreRevealed });
   }
 
   render() {
     return (
       <Container>
         <Header>Other highly rated homes</Header>
-        <HousesList 
+        <HousesList
           state={this.state}
           toggleHomes={this.toggleMoreHomes}
           addFavoriteList={this.addFavoriteList}
           addToFavorited={this.addToFavorited}
           removeFromFavorited={this.removeFromFavorited}
-        /> 
+        />
         <BottomPadding></BottomPadding>
         <GlobalStyle />
       </Container>
