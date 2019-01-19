@@ -5,37 +5,37 @@ import { HousesListCss, HousingList, ShowMoreHomes } from './Styled_Components/s
 const HousesList = (props) => (
   <HousesListCss>
     <HousingList>
-      {props.state.houses[0].suggestions.slice(0, 4).map((house, index) => 
-        <House 
-          house={house} 
+      {props.state.houses[0].suggestions.slice(0, 4).map((house, index) =>
+        <House
+          house={house}
           key={index}
           state={props.state}
           addFavoriteList={props.addFavoriteList}
-          addToFavorited = {props.addToFavorited}
-          removeFromFavorited = {props.removeFromFavorited}
+          addToFavorited={props.addToFavorited}
+          removeFromFavorited={props.removeFromFavorited}
         />
       )}
     </HousingList>
-    {props.state.moreRevealed 
+    {props.state.moreRevealed
       ? <div>
-        <HousingList>{props.state.houses[0].suggestions.slice(4, 8).map((house, index) => 
-          <House 
-            house={house} 
+        <HousingList>{props.state.houses[0].suggestions.slice(4, 8).map((house, index) =>
+          <House
+            house={house}
             key={index}
             state={props.state}
             addFavoriteList={props.addFavoriteList}
-            addToFavorited = {props.addToFavorited}
-            removeFromFavorited = {props.removeFromFavorited}
+            addToFavorited={props.addToFavorited}
+            removeFromFavorited={props.removeFromFavorited}
           />)}
         </HousingList>
-        <HousingList>{props.state.houses[0].suggestions.slice(8, 12).map((house, index) => 
-          <House 
-            house={house} 
+        <HousingList>{props.state.houses[0].suggestions.slice(8, 12).map((house, index) =>
+          <House
+            house={house}
             key={index}
             state={props.state}
             addFavoriteList={props.addFavoriteList}
-            addToFavorited = {props.addToFavorited}
-            removeFromFavorited = {props.removeFromFavorited}
+            addToFavorited={props.addToFavorited}
+            removeFromFavorited={props.removeFromFavorited}
           />)}
         </HousingList>
       </div>
@@ -43,5 +43,5 @@ const HousesList = (props) => (
     }
   </HousesListCss>
 );
-  
+
 export default HousesList;

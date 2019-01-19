@@ -13,7 +13,7 @@ app.use(express.static(__dirname + '/../public'));
 // ------------------------------ MY ROUTES ------------------------------ //
 
 app.get('/homes/:id/suggestions', (req, res) => {
-  const id = req.params.id; //Will be 1
+  const id = req.params.id;
 
   pgres.getSuggestions(id, (err, response) => {
     if (err) {
