@@ -1,3 +1,4 @@
+const nr = require('newrelic')
 const express = require('express');
 const bodyParser = require('body-parser');
 // const db = require('../db/index.js');
@@ -8,21 +9,20 @@ const morgan = require('morgan')
 app.use(morgan('tiny'));
 
 app.use(bodyParser.json());
-app.use(express.static(__dirname + '/../public'));
+app.use('/homes/:id/suggestions', express.static(__dirname + '/../public'));
 
 // ------------------------------ MY ROUTES ------------------------------ //
-
 app.get('/homes/:id/suggestions', (req, res) => {
   const id = req.params.id;
 
   pgres.getSuggestions(id, (err, response) => {
     if (err) {
-      res.status(500).send(err);
+      res.send(err);
     } else {
       res.send(response);
     }
-  })
-})
+  });
+});
 
 app.post('/homes/:id/suggestions', (req, res) => {
   const id = req.params.id;
@@ -36,7 +36,7 @@ app.post('/homes/:id/suggestions', (req, res) => {
   })
 })
 
-// ------------------------------ PREVIOUS ROUTES ------------------------------ //
+// ------------------------------ PREVIOUS ROUTES -------------------------- //
 
 // app.get('/user/favorites', function (req, res) {
 //   db.getFavorites()

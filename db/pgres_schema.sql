@@ -1,3 +1,5 @@
+CREATE DATABASE IF NOT EXISTS listings;
+
 DROP TABLE IF EXISTS Homes;
 DROP TABLE IF EXISTS Suggestions;
 
@@ -11,7 +13,7 @@ CREATE TABLE IF NOT EXISTS Suggestions (
   CITY VARCHAR(255),
   COUNTRY VARCHAR(50),
   home_beds INT,
-  home_relation_id INT,
+  home_relation_id INT, --fkey / INDEX
   home_thumbnail_img TEXT,
   home_price DECIMAL,
   STATES VARCHAR(50)
