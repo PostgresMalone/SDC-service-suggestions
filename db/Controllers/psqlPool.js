@@ -10,6 +10,7 @@ pool.on('error', (err) => {
 });
 
 const getSuggestions = (id, callback) => {
+
   const searchQuery = `SELECT * FROM suggestions WHERE home_relation_id=${id}`;
 
   redis.Get(id, (err, res) => {
@@ -18,7 +19,7 @@ const getSuggestions = (id, callback) => {
         if (error) {
           res.send(error, null);
         } else {
-          redis.redisSet(id, response, callback);
+          redis.Set(id, response, callback);
         }
       })
     } else {
