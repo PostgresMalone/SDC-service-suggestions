@@ -16,11 +16,11 @@ const Get = (id, callback) => {
 }
 
 const Set = (id, data, callback) => {
-  client.set(id, JSON.stringify(data), 'EX', 6000, (err) => {
+  client.set(id, JSON.stringify(data.rows), 'EX', 6000, (err) => {
     if (err) {
       callback(err)
     } else {
-      redisGet(id, callback)
+      Get(id, callback)
     }
   });
 }
