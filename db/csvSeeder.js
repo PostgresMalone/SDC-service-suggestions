@@ -128,7 +128,7 @@ const generateHomesCsv = () => {
 }
 
 
-// generateHomesCsv();
+generateHomesCsv();
 generateSuggestionCsv();
 
 
