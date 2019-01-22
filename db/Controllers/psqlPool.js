@@ -19,11 +19,12 @@ const getSuggestions = (id, callback) => {
         if (error) {
           res.send(error, null);
         } else {
-          redis.Set(id, response, callback);
+          redis.setItem(id, response);
         }
       })
     } else {
-      callback(null, res.rows);
+      console.log(res, 'Result in my psql pool file')
+      callback(null, res);
     }
   });
 }

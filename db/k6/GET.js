@@ -1,5 +1,4 @@
 import http from "k6/http";
-import { sleep } from "k6";
 
 const generateNumberBetweenRange = (min, max) => {
   min = Math.ceil(min);
