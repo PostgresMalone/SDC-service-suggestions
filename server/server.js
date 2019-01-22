@@ -1,4 +1,4 @@
-const nr = require('newrelic')
+const nr = require('newrelic');
 const express = require('express');
 const bodyParser = require('body-parser');
 // const db = require('../db/index.js');
@@ -7,18 +7,26 @@ const pgres = require('../db/Controllers/psqlPool.js');
 const morgan = require('morgan')
 
 app.use(morgan('tiny'));
-
 app.use(bodyParser.json());
-app.use('/homes/:id/suggestions', express.static(__dirname + '/../public'));
+
+// Removed this '/homes/:id/suggestions',  in the beginning, and it shows the response in my browser
+// Tried /homes/:id/ and it gets the same as the above, but doesnt show my response in the browser. 
+// Current configuration only displays the homepage, with the ID being hard coded in without 
+
+// This implementation shows the returned data that I get back from the server, but really slow
+app.use('/homes/:id/suggestions/', express.static(__dirname + '/../public'));
+//This shows the actual HTML page that I get back from the server
+// app.use('/homes/:id/suggestions', express.static(__dirname + '/../public'));
 
 // ------------------------------ MY ROUTES ------------------------------ //
-app.get('/homes/:id/suggestions', (req, res) => {
+app.get('/homes/:id', (req, res) => {
   const id = req.params.id;
 
   pgres.getSuggestions(id, (err, response) => {
     if (err) {
       res.send(err);
     } else {
+      console.log(response, 'Response in my server file from componentdidmount');
       res.send(response);
     }
   });

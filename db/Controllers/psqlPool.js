@@ -1,5 +1,6 @@
 const pg = require('pg')
 const config = require('./config.js');
+const redis = require('../redisLayer.js')
 
 const pool = new pg.Pool(config);
 pool.connect()
@@ -9,15 +10,21 @@ pool.on('error', (err) => {
 });
 
 const getSuggestions = (id, callback) => {
-  // const searchQuery = `SELECT * FROM suggestions JOIN homes ON homes.
-  // home_id=suggestions.home_relation_id WHERE suggestions.home_relation_id=${id};`;
+
   const searchQuery = `SELECT * FROM suggestions WHERE home_relation_id=${id}`;
 
-  pool.query(searchQuery, (err, res) => {
-    if (err) {
-      res.send(err);
+  redis.Get(id, (err, res) => {
+    if (err || res === null) {
+      pool.query(searchQuery, (error, response) => {
+        if (error) {
+          res.send(error, null);
+        } else {
+          redis.setItem(id, response);
+        }
+      })
     } else {
-      callback(null, res.rows);
+      console.log(res, 'Result in my psql pool file')
+      callback(null, res);
     }
   });
 }
