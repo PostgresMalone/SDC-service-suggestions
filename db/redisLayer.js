@@ -8,14 +8,14 @@ client.on('error', (err) => console.log('Error', err));
 const Get = (id, callback) => {
   client.get(id, (err, response) => {
     if (err) {
-      callback(err);
+      callback(err, null);
     } else {
       callback(null, JSON.parse(response));
     }
   })
 }
 
-const Set = (id, data, callback) => {
+const setItem = (id, data, callback) => {
   client.set(id, JSON.stringify(data.rows), 'EX', 6000, (err) => {
     if (err) {
       callback(err)
@@ -27,5 +27,5 @@ const Set = (id, data, callback) => {
 
 module.exports = {
   Get,
-  Set,
+  setItem,
 }
