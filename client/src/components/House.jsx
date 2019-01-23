@@ -1,5 +1,4 @@
 import React from 'react';
-import FavoritesModal from './FavoritesModal.jsx';
 import {
   HouseInfo, ImgContainer, PlusText,
   BedText, VerifiedText, HouseName, HousePrice,
@@ -26,7 +25,7 @@ class House extends React.Component {
 
   toggleListForm() {
     this.setState({ showListForm: !this.state.showListForm });
-  }    
+  }
 
   render() {
     return (

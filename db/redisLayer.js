@@ -10,7 +10,7 @@ const Get = (id, callback) => {
     if (err) {
       callback(err, null);
     } else {
-      callback(null, JSON.parse(response));
+      callback(null, JSON.parse(response)); //callback is not a function
     }
   })
 }
