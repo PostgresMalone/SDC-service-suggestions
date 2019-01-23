@@ -14,7 +14,8 @@
     "startseed": "npm run seed & npm start",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "watch": "nodemon server/server.js"
   },
   "dependencies": {
     "axios": "^0.18.0",
@@ -27,6 +28,7 @@
     "mysql": "^2.16.0",
     "newrelic": "^5.2.0",
     "nodemon": "^1.18.9",
+    "pg": "^7.8.0",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
     "redis": "^2.8.0",

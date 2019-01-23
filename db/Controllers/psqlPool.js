@@ -23,7 +23,6 @@ const getSuggestions = (id, callback) => {
         }
       })
     } else {
-      console.log(res, 'Result in my psql pool file')
       callback(null, res);
     }
   });
