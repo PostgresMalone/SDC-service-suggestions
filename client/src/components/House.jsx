@@ -26,7 +26,7 @@ class House extends React.Component {
 
   toggleListForm() {
     this.setState({ showListForm: !this.state.showListForm });
-  }
+  }    
 
   render() {
     return (
